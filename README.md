@@ -6,37 +6,28 @@ Technology stack:
 -Flask
 -MongoDB
 
-#Installation
+# Installation
 Microservice requires Flask, PyMongo, Flask-Pymongo modules
 
 Install the dependencies
-"""
+```
 pip install -r requirements.txt
-"""
+```
 
-#Run
-"""
+# Run
+```
 python __init__.py
-"""
+```
 
-#Supported CRUD operations using crul
--Get all product names
+# Supported operations using curl
+-*Get all product names*
 curl -X GET http://localhost:5000/
 
--Get product names filtered by parameter
-*Linux*:
-curl -X GET http://localhost:5000/ -d "{"name":"*product_name*"}"
-*Windows*
-curl -X GET http://localhost:5000/ -d "{\"name\":\"*product_name*\"}"
+-*Get product names filtered by parameter*
+curl -X GET http://localhost:5000/ -d "{"name":*product_name*}"
 
--Create new product
-*Liunx*
-curl -X POST http://localhost:5000/add -d "{"name":"*product_name*","description":"*product_description*"}"
-*Windows*
-curl -X POST http://localhost:5000/add -d "{\"name\":\"*product_name*\",\"description\":\"*product_description*\"}"
+-*Create new product*
+curl -X POST http://localhost:5000/add -d "{"name":*product_name*,"description":*product_description*}"
 
--Get product details by id
-*Linux*
+-*Get product details by id*
 curl -X GET http://localhost:5000/details -d "{"id":*number*}"
-*Windows*
-curl -X GET http://localhost:5000/details -d "{\"id\":*number*}"
