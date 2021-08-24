@@ -19,24 +19,31 @@ def add_one():
     except Exception as e:
         return jsonify(message=str(e))
 
-    keys = list(product_details.keys())
-    required_fields = ['name', 'description']
+    keys = set(product_details.keys())
+    required_fields = {'name', 'description', 'parameters'}
 
     if keys != required_fields:
-        return jsonify(error="Wrong request")
+        return jsonify(error="Wrong product properties")
+    if type(product_details['parameters']) != dict:
+        return jsonify(error="Product parameters must be key:value pairs")
 
     try:
-        new_product = Product(product_details['name'], product_details['description'])
+        new_product = Product(
+            product_details['name'],
+            product_details['description'],
+            product_details['parameters']
+            )
         added_product = col.insert_one({
             '_id':new_product.id,
             'name': new_product.name,
-            'description':new_product.description
+            'description':new_product.description,
+            'parameters':new_product.parameters
             })
     except BulkWriteError as e:
         return jsonify(message="duplicates encountered and ignored",                             
                              details=e.details)
 
-    return jsonify(message="success", insertedId=added_product.inserted_id)
+    return jsonify(message="success", insertedId=new_product.id)
 
 #home page, returns list of goods with optional filter
 @app.route("/", methods=['GET'])
@@ -47,16 +54,34 @@ def home():
     except Exception as e:
         query = None
 
+    #TEMP
+    print(query)
+    print('\n\n\n')
+
     if not query:
         goods = col.find({}, requested_fields)
         number_of_elements = col.count_documents({})
     
-    elif len(query.keys())==1 and list(query.keys())[0] in ['name', 'description']:
-        #search by parameter
+    elif len(query.keys())!=1:
+        return jsonify(error="Wrong request")
+
+    elif list(query.keys())[0] in ['name', 'description', 'parameters']:
         try:
             key = list(query.keys())[0]
-            query = {
-                key: {"$regex": query[key]}
+
+            if key != 'parameters':
+                query = {
+                    key: {"$regex": query[key]}
+                    }
+
+            elif type(query[key]) != dict:
+                return jsonify(error="parameter is a key:value pair")
+
+            else:
+                #search by parameter
+                product_parameter = list(query[key].keys())[0]
+                query = {
+                    key+'.'+product_parameter : query[key][product_parameter]
                 }
 
             goods = col.find(query, requested_fields)
@@ -64,6 +89,7 @@ def home():
         
         except TypeError as e:
             return jsonify(error=str(e))
+
     else:
         return jsonify(error="Wrong request")
 
@@ -99,4 +125,4 @@ def handle_exception(e):
     return jsonify(error=str(e))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
