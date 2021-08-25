@@ -54,10 +54,6 @@ def home():
     except Exception as e:
         query = None
 
-    #TEMP
-    print(query)
-    print('\n\n\n')
-
     if not query:
         goods = col.find({}, requested_fields)
         number_of_elements = col.count_documents({})

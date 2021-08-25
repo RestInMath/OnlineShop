@@ -28,7 +28,7 @@ curl -X GET http://localhost:5000/
 curl -X GET http://localhost:5000/ -d "{"name":*product_name*}"   
 curl -X GET http://localhost:5000/ -d "{"description":*some_words*}"   
 *Windows*     
-curl -X GET http://localhost:5000/ -d "{\\"name\\":*product_name*}"
+curl -X GET http://localhost:5000/ -d "{\\"name\\":*product_name*}"     
 curl -X GET http://localhost:5000/ -d "{\\"description\\":*some_words*}"   
 
 ### *Get product names by parameter*      
